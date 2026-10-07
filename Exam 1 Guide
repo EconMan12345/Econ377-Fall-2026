@@ -1,0 +1,426 @@
+############################################################
+# ECN 377 — EXAM I MASTER R SCRIPT
+# Covers Study Guide through R^2 (Days 1–12)
+# IMPORTANT: Units/logs in regression are NOT on Exam I.
+# Round final numeric answers to hundredths.
+############################################################
+
+# ==========================================================
+# 0. SETUP / DATA
+# ==========================================================
+# If wooldridge is not installed, run ONCE (before exam):
+# install.packages("wooldridge")
+
+library(wooldridge)
+
+# Load whatever dataset the question names, e.g.:
+# data("wage1")
+# data("ceosal1")
+# data("bwght")
+
+# See variable names / basic info:
+# names(wage1)
+# head(wage1)
+# summary(wage1)
+
+
+# ==========================================================
+# 1. VECTORS, SUMS, SAMPLE SIZE, SAMPLE MEAN
+# USE WHEN: given raw numbers OR asked sum / n / mean
+# ==========================================================
+
+x <- c(9, 2, 5)       # CHANGE THESE VALUES
+sum(x)                 # Σx_i
+length(x)              # n
+mean(x)                 # x-bar
+round(mean(x), 2)
+
+# Dataset column version:
+# nrow(wage1)
+# sum(wage1$wage)
+# mean(wage1$wage)
+# round(mean(wage1$wage), 2)
+
+
+# ==========================================================
+# 2. PERCENT CHANGE vs PERCENTAGE-POINT CHANGE
+# ==========================================================
+# USE WHEN: a rate changes from old to new.
+old <- 4                # CHANGE
+new <- 6                # CHANGE
+
+percentage_point_change <- new - old
+percent_change <- ((new - old) / old) * 100
+round(percentage_point_change, 2)
+round(percent_change, 2)
+
+
+# ==========================================================
+# 3. LINEAR FUNCTION: LEVEL AND CHANGE
+# y = b0 + b1*x
+# Δy = b1*Δx  (intercept drops out)
+# ==========================================================
+b0 <- 2                 # CHANGE
+b1 <- 0.5               # CHANGE
+x_value <- 10           # CHANGE
+predicted_y <- b0 + b1*x_value
+round(predicted_y, 2)
+
+change_x <- 3           # CHANGE
+change_y <- b1*change_x
+round(change_y, 2)
+
+# TWO OR MORE VARIABLES:
+# y = b0 + b1*x1 + b2*x2
+# Δy = b1*Δx1 + b2*Δx2
+b1 <- 2                 # CHANGE
+b2 <- -1                # CHANGE
+dx1 <- 3                # CHANGE
+dx2 <- 4                # CHANGE
+dy <- b1*dx1 + b2*dx2
+round(dy, 2)
+
+
+# ==========================================================
+# 4. SAMPLE VARIANCE & SAMPLE STANDARD DEVIATION
+# R var() uses n-1. R sd() is sample SD.
+# ==========================================================
+x <- c(6, 4, 3)        # CHANGE
+round(var(x), 2)
+round(sd(x), 2)
+
+# Dataset column:
+# round(var(wage1$educ), 2)
+# round(sd(wage1$educ), 2)
+
+# Manual check:
+n <- length(x)
+xbar <- mean(x)
+sample_var_manual <- sum((x - xbar)^2)/(n - 1)
+sample_sd_manual <- sqrt(sample_var_manual)
+round(sample_var_manual, 2)
+round(sample_sd_manual, 2)
+
+
+# ==========================================================
+# 5. SAMPLE COVARIANCE & CORRELATION
+# Covariance: sign gives direction; units depend on X and Y.
+# Correlation: -1 to +1 and has NO units.
+# ==========================================================
+x <- c(6, 5, 4)        # CHANGE
+y <- c(3, 1, 1)        # CHANGE
+round(cov(x, y), 2)
+round(cor(x, y), 2)
+
+# Dataset columns:
+# round(cov(wage1$wage, wage1$educ), 2)
+# round(cor(wage1$wage, wage1$educ), 2)
+
+
+# ==========================================================
+# 6. NATURAL LOG AND EXPONENTIAL — BASICS ONLY
+# NOTE: logs IN REGRESSION are NOT on Exam I.
+# ==========================================================
+x <- 10                 # CHANGE
+log(x)                   # natural log ln(x)
+exp(2)                   # e^2
+exp(log(x))              # returns x
+log(exp(2))              # returns 2
+
+
+# ==========================================================
+# 7. EXPECTED VALUE FROM A PROBABILITY TABLE
+# E[X] = Σ x*p(x)
+# E[X^2] = Σ x^2*p(x)
+# ==========================================================
+x <- c(4, 1)            # possible values — CHANGE
+p <- c(0.5, 0.5)        # probabilities — CHANGE
+
+EX <- sum(x*p)
+EX2 <- sum((x^2)*p)
+round(EX, 2)
+round(EX2, 2)
+
+# Check probabilities sum to 1:
+sum(p)
+
+
+# ==========================================================
+# 8. EXPECTATION OF LINEAR COMBINATIONS
+# E[aX+b] = aE[X] + b
+# E[aX+bY] = aE[X] + bE[Y]
+# ==========================================================
+EX <- 5                  # CHANGE
+EY <- 8                  # CHANGE
+a <- 2                   # CHANGE
+b <- 3                   # CHANGE
+constant <- 4            # CHANGE
+
+E_aX_plus_constant <- a*EX + constant
+E_aX_plus_bY <- a*EX + b*EY
+round(E_aX_plus_constant, 2)
+round(E_aX_plus_bY, 2)
+
+
+# ==========================================================
+# 9. RANDOM VARIABLE VARIANCE & SD
+# Var(X) = E[X^2] - (E[X])^2
+# ==========================================================
+x <- c(5, 8, 0)         # CHANGE
+p <- c(1/3, 1/3, 1/3)   # CHANGE
+EX <- sum(x*p)
+EX2 <- sum((x^2)*p)
+VarX <- EX2 - EX^2
+SDX <- sqrt(VarX)
+round(EX, 2)
+round(EX2, 2)
+round(VarX, 2)
+round(SDX, 2)
+
+
+# ==========================================================
+# 10. VARIANCE OF TRANSFORMATIONS / LINEAR COMBINATIONS
+# Var(aX+b) = a^2 Var(X)   [constant b does not matter]
+# Var(aX+bY) = a^2 Var(X) + b^2 Var(Y) + 2ab Cov(X,Y)
+# ==========================================================
+a <- 2                   # CHANGE
+b <- 3                   # CHANGE
+VarX <- 4                # CHANGE
+VarY <- 9                # CHANGE
+CovXY <- -1              # CHANGE
+
+Var_aX_plus_constant <- a^2 * VarX
+Var_aX_plus_bY <- a^2*VarX + b^2*VarY + 2*a*b*CovXY
+round(Var_aX_plus_constant, 2)
+round(Var_aX_plus_bY, 2)
+
+# If X and Y are independent, Cov(X,Y)=0:
+Var_independent <- a^2*VarX + b^2*VarY
+round(Var_independent, 2)
+
+
+# ==========================================================
+# 11. POPULATION COVARIANCE / CORRELATION FROM MOMENTS
+# Cov(X,Y) = E[XY] - E[X]E[Y]
+# Corr(X,Y) = Cov(X,Y)/(SD(X)*SD(Y))
+# ==========================================================
+EX <- 2                  # CHANGE
+EY <- 3                  # CHANGE
+EXY <- 7                 # CHANGE
+SDX <- 2                 # CHANGE
+SDY <- 4                 # CHANGE
+
+CovXY <- EXY - EX*EY
+CorrXY <- CovXY/(SDX*SDY)
+round(CovXY, 2)
+round(CorrXY, 2)
+
+
+# ==========================================================
+# 12. CONDITIONAL EXPECTATION / CONDITIONAL VARIANCE
+# E[Y | X=x] = average Y among observations with X=x
+# ==========================================================
+# Example using wage1: average wage for educ == 16
+# data("wage1")
+# round(mean(wage1$wage[wage1$educ == 16]), 2)
+# round(var(wage1$wage[wage1$educ == 16]), 2)
+# round(sd(wage1$wage[wage1$educ == 16]), 2)
+
+# TEMPLATE — CHANGE dataset, Y, X, and value:
+# round(mean(DATA$Y[DATA$X == VALUE]), 2)
+# round(var(DATA$Y[DATA$X == VALUE]), 2)
+
+
+# ==========================================================
+# 13. SIMPLE OLS REGRESSION
+# Model: Y = beta0 + beta1*X + U
+# R syntax: lm(Y ~ X, data = DATA)
+# ==========================================================
+data("wage1")
+reg <- lm(wage ~ educ, data = wage1)
+summary(reg)
+
+# Intercept b0:
+b0 <- reg$coefficients[1]
+round(b0, 2)
+
+# Slope b1:
+b1 <- reg$coefficients[2]
+round(b1, 2)
+
+# Same thing using coef():
+round(coef(reg)[1], 2)
+round(coef(reg)[2], 2)
+
+
+# ==========================================================
+# 14. MANUAL OLS SLOPE & INTERCEPT
+# b1 = Cov(X,Y)/Var(X)
+# b0 = ybar - b1*xbar
+# ==========================================================
+x <- wage1$educ
+y <- wage1$wage
+
+b1_manual <- cov(x,y)/var(x)
+b0_manual <- mean(y) - b1_manual*mean(x)
+round(b1_manual, 2)
+round(b0_manual, 2)
+
+
+# ==========================================================
+# 15. FITTED VALUES / PREDICTIONS
+# yhat = b0 + b1*x
+# ==========================================================
+# All fitted values from sample:
+head(reg$fitted.values)
+
+# Fitted value for a specific x, manual method:
+x_value <- 14           # CHANGE
+prediction <- b0 + b1*x_value
+round(prediction, 2)
+
+# Alternative R method:
+round(predict(reg, newdata = data.frame(educ = 14)), 2)
+# IMPORTANT: newdata column name must match the X variable in lm().
+
+
+# ==========================================================
+# 16. PREDICTED CHANGE IN Y
+# Δyhat = b1 * Δx
+# ==========================================================
+change_x <- 2           # CHANGE
+predicted_change <- b1*change_x
+round(predicted_change, 2)
+
+# Example: if slope is negative, result will be negative.
+
+
+# ==========================================================
+# 17. RESIDUALS
+# uhat = actual y - fitted y
+# ==========================================================
+head(reg$residuals)
+
+# Check one observation manually:
+i <- 1                   # CHANGE observation number
+actual_y <- wage1$wage[i]
+fitted_y <- reg$fitted.values[i]
+residual_i <- actual_y - fitted_y
+round(c(actual_y=actual_y, fitted_y=fitted_y, residual=residual_i), 2)
+
+
+# ==========================================================
+# 18. OLS ALGEBRAIC PROPERTIES — QUICK CHECKS
+# ==========================================================
+# Residuals sum to zero (up to tiny computer rounding error):
+sum(reg$residuals)
+
+# Mean residual is zero:
+mean(reg$residuals)
+
+# X and residuals are uncorrelated:
+cor(wage1$educ, reg$residuals)
+
+# (xbar, ybar) lies on OLS line:
+xbar <- mean(wage1$educ)
+ybar <- mean(wage1$wage)
+yhat_at_xbar <- b0 + b1*xbar
+round(c(ybar=ybar, yhat_at_xbar=yhat_at_xbar), 2)
+
+
+# ==========================================================
+# 19. SST, SSE, SSR
+# COURSE NOTATION FROM STUDY GUIDE:
+# SST = total sum of squares
+# SSE = explained sum of squares
+# SSR = sum of squared residuals
+# SST = SSE + SSR
+# ==========================================================
+y <- wage1$wage
+
+SST <- sum((y - mean(y))^2)
+SSR <- sum(reg$residuals^2)
+SSE <- sum((reg$fitted.values - mean(y))^2)
+
+round(SST, 2)
+round(SSE, 2)
+round(SSR, 2)
+round(SSE + SSR, 2)     # should equal SST
+
+# NOTE: Some textbooks/software use different labels for SSE/SSR.
+# On THIS course guide, use the definitions above.
+
+
+# ==========================================================
+# 20. R-SQUARED
+# R^2 = SSE/SST = 1 - SSR/SST
+# Proportion of sample variation in Y explained by regression.
+# ==========================================================
+R2_method1 <- SSE/SST
+R2_method2 <- 1 - SSR/SST
+R2_from_R <- summary(reg)$r.squared
+
+round(R2_method1, 2)
+round(R2_method2, 2)
+round(R2_from_R, 2)
+
+
+# ==========================================================
+# 21. COMPLETE REGRESSION QUESTION TEMPLATE
+# COPY/EDIT THIS BLOCK DURING EXAM
+# ==========================================================
+# data("DATASET")
+# reg <- lm(Y ~ X, data = DATASET)
+# summary(reg)
+#
+# b0 <- reg$coefficients[1]
+# b1 <- reg$coefficients[2]
+#
+# round(b0, 2)                         # intercept
+# round(b1, 2)                         # slope
+# round(b0 + b1*XVALUE, 2)             # predicted Y at X
+# round(b1*CHANGE_IN_X, 2)             # predicted change in Y
+# round(sum(reg$residuals^2), 2)        # SSR
+# round(summary(reg)$r.squared, 2)      # R^2
+#
+# y <- DATASET$Y
+# SST <- sum((y - mean(y))^2)
+# SSR <- sum(reg$residuals^2)
+# SSE <- sum((reg$fitted.values - mean(y))^2)
+# round(c(SST=SST, SSE=SSE, SSR=SSR, R2=1-SSR/SST), 2)
+
+
+# ==========================================================
+# 22. PRACTICE QUIZ DATASETS — READY TO RUN
+# ==========================================================
+data("wage1")
+data("bwght")
+
+# wage1 practice:
+round(nrow(wage1), 2)
+round(mean(wage1$wage), 2)
+round(sd(wage1$educ), 2)
+reg_wage <- lm(wage ~ educ, data=wage1)
+b0_wage <- reg_wage$coefficients[1]
+b1_wage <- reg_wage$coefficients[2]
+round(b1_wage, 2)
+round(b0_wage, 2)
+round(b0_wage + b1_wage*14, 2)
+round(b1_wage*2, 2)
+SSR_wage <- sum(reg_wage$residuals^2)
+round(SSR_wage, 2)
+round(summary(reg_wage)$r.squared, 2)
+
+# bwght practice:
+reg_bwght <- lm(bwght ~ cigs, data=bwght)
+b1_cigs <- reg_bwght$coefficients[2]
+round(b1_cigs*5, 2)
+
+
+############################################################
+# END — QUICK SEARCH TERMS:
+# MEAN | VARIANCE | SD | COVARIANCE | CORRELATION
+# EXPECTED VALUE | CONDITIONAL | OLS | SLOPE | INTERCEPT
+# FITTED | PREDICTION | CHANGE | RESIDUAL | SST | SSE | SSR
+# R-SQUARED | PERCENT CHANGE
+############################################################
